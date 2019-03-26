@@ -24,15 +24,15 @@ public class MainActivity extends AppCompatActivity{
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
         mTextViewResult = findViewById(R.id.text_view_result);
 
         OkHttpClient client = new OkHttpClient();
-
+        int index = 5;
+        String requestUrl = "https://storage.scrapinghub.com/items/381388/1/" + index;
 
         HttpUrl.Builder urlBuilder =
-        HttpUrl.parse("https://storage.scrapinghub.com/items/381388/1").newBuilder();
-        urlBuilder.addQueryParameter("apikey","ea529b13f1004c559834d391160d17c4 ");
+        HttpUrl.parse(requestUrl).newBuilder();
+        urlBuilder.addQueryParameter("apikey","ea529b13f1004c559834d391160d17c4");
         String url = urlBuilder.build().toString();
 
         Request request = new Request.Builder()
@@ -49,17 +49,17 @@ public class MainActivity extends AppCompatActivity{
             @Override
             public void onResponse(Call call, Response response) throws IOException {
                 if (response.isSuccessful()) {
-                    String myResponse = response.body().string();
+                    final String myResponse = response.body().string();
 
                     Gson gson = new Gson();
-                    final News[] latestnews = gson.fromJson(myResponse, News[].class);
+                    News[] latestnews = gson.fromJson(myResponse, News[].class);
 
                     System.out.println("it is working");
 
                     MainActivity.this.runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                        mTextViewResult.setText(latestnews.getNews());
+                        mTextViewResult.setText(myResponse);
                        }
                     });
                 }
