@@ -59,7 +59,7 @@ public class MainActivity extends AppCompatActivity{
                     MainActivity.this.runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                        mTextViewResult.setText(myResponse);
+                        mTextViewResult.setText(latestnews.getNews());
                        }
                     });
                 }
