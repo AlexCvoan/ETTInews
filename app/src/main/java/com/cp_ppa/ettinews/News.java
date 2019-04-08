@@ -13,7 +13,11 @@ public class News{
         this.title = title;
     }
 
-    public List<String> getNews(){
+    public List<String> getNews() {
         return this.title;
     }
+    public List<String> getUrl() {
+        return this.url;
+    }
+
 }
