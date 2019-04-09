@@ -2,13 +2,21 @@ package com.cp_ppa.ettinews;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+
+import org.w3c.dom.Text;
 
 import java.io.IOException;
+import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.concurrent.TimeUnit;
 
 import okhttp3.Call;
@@ -22,8 +30,13 @@ import okhttp3.Response;
 
 public class MainActivity extends AppCompatActivity{
 
-    private TextView mTextViewResult;
     private Button mRefreshButton;
+    private Button mOldNews;
+    private ArrayList<String> mTitlesFixed = new ArrayList<>(20);
+    private ArrayList<String> mUrlsFixed = new ArrayList<>(20);
+    private RecyclerView recyclerView;
+    private RecyclerView.Adapter mAdapter;
+    private RecyclerView.LayoutManager layoutManager;
 
 
     @Override
@@ -31,9 +44,8 @@ public class MainActivity extends AppCompatActivity{
         final int index = 7;
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        mTextViewResult = findViewById(R.id.text_view_result);
         mRefreshButton = findViewById(R.id.refreshButton);
-
+        mOldNews = findViewById(R.id.oldNews);
 
         mRefreshButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -47,6 +59,18 @@ public class MainActivity extends AppCompatActivity{
                     }
                     getNews(index);
                 }
+
+            }
+        });
+
+        mOldNews.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+               getNews(index);
+           //    initRecyclerView(mTitlesFixed);
+                System.out.println(mTitlesFixed.size());
+
 
             }
         });
@@ -85,22 +109,7 @@ public class MainActivity extends AppCompatActivity{
             @Override
             public void onResponse(Call call, Response response) throws IOException {
                 if (response.isSuccessful()) {
-//                    final String myResponse = response.body().string();
-//
-//                    Gson gson = new Gson();
-//                    News[] latestnews = gson.fromJson(myResponse, News[].class);
-//
-//                    System.out.println("it is working");
-//
-//                    MainActivity.this.runOnUiThread(new Runnable() {
-//                        @Override
-//                        public void run() {
-//                            mTextViewResult.setText(myResponse);
-//                        }
-//                    });
                     System.out.println("refresh done");
-
-
                 }
             }
 
@@ -132,17 +141,41 @@ public class MainActivity extends AppCompatActivity{
                 @Override
                 public void onResponse(Call call, Response response) throws IOException {
                     if (response.isSuccessful()) {
-                        final String myResponse = response.body().string();
-
+                        String myResponse = response.body().string();
+                        String myCustomResponse = myResponse.substring(1, myResponse.length()-1);
                         Gson gson = new Gson();
-                        News[] latestnews = gson.fromJson(myResponse, News[].class);
+
+
+                        final News latestNews = gson.fromJson(myCustomResponse, News.class);
+
+
+                        ArrayList<String> mTitles = latestNews.getTitle();
+
+
+                        for(int i = 0; i < mTitles.size(); i++){
+                            mTitlesFixed.add(mTitles.get(i).substring(4));
+                        }
+
+                        ArrayList<String> mUrls = latestNews.getUrl();
+
+                        for(int i = 0; i< mUrls.size(); i++){
+                            mUrlsFixed.add("http://www.electronica.pub.ro"+mUrls.get(i));
+                        }
 
                         System.out.println("it is working");
 
-                        MainActivity.this.runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                mTextViewResult.setText(myResponse);
+
+
+
+                     MainActivity.this.runOnUiThread(new Runnable() {
+                        @Override
+                           public void run() {
+                            recyclerView = findViewById(R.id.recycler_view);
+                            recyclerView.setHasFixedSize(true);
+                            layoutManager = new LinearLayoutManager(MainActivity.this);
+                            recyclerView.setLayoutManager(layoutManager);
+                            mAdapter = new RecyclerViewAdapter(mTitlesFixed, mUrlsFixed);
+                            recyclerView.setAdapter(mAdapter);
                             }
                         });
                     }
@@ -151,6 +184,15 @@ public class MainActivity extends AppCompatActivity{
 
 
     }
+
+//    private void initRecyclerView(ArrayList<String> titles){
+//        recyclerView = findViewById(R.id.recycler_view);
+//        recyclerView.setHasFixedSize(true);
+//        layoutManager = new LinearLayoutManager(this);
+//        recyclerView.setLayoutManager(layoutManager);
+//        mAdapter = new RecyclerViewAdapter(titles);
+//        recyclerView.setAdapter(mAdapter);
+//    }
 
 }
 

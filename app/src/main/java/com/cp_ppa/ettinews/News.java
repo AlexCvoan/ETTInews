@@ -1,19 +1,32 @@
 package com.cp_ppa.ettinews;
 
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
+
+import java.util.ArrayList;
 import java.util.List;
 
 public class News{
-    private List<String> url;
-    private String _type;
-    private List<String> title;
+    @SerializedName("url")
+    @Expose
+    public ArrayList<String> url = null;
+    @SerializedName("_type")
+    @Expose
+    public String type;
+    @SerializedName("title")
+    @Expose
+    public ArrayList<String> title = null;
 
-    public News(List<String> url, String _type, List<String> title){
+    public News(ArrayList<String> url, String _type, ArrayList<String> title){
         this.url = url;
-        this._type = _type;
+        this.type = _type;
         this.title = title;
     }
 
-    public List<String> getNews(){
+    public ArrayList<String> getTitle(){
         return this.title;
+    }
+    public ArrayList<String> getUrl() {
+        return this.url;
     }
 }
