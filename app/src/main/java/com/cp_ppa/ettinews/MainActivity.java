@@ -1,6 +1,7 @@
 package com.cp_ppa.ettinews;
 
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -42,7 +43,7 @@ public class MainActivity extends AppCompatActivity{
         setContentView(R.layout.activity_main);
         final Button mStartButton = findViewById(R.id.startButton);
 
-  //      refreshNews();
+        refreshNews();
         getJobCount();
 
 
@@ -55,6 +56,7 @@ public class MainActivity extends AppCompatActivity{
 
                 Bundle bundle = new Bundle();
                 bundle.putString("mLastKey", mLastKey);
+                bundle.putString("mLastButOneKey",mLastButOneKey);
                 Intent intent = new Intent(MainActivity.this, MainScreen.class);
                 intent.putExtras(bundle);
                 MainActivity.this.startActivity(intent);
@@ -105,5 +107,45 @@ public class MainActivity extends AppCompatActivity{
     }
 
 
+    private void refreshNews() {
+        OkHttpClient client = new OkHttpClient();
+        String requestUrl = "https://app.scrapinghub.com/api/run.json";
+
+        HttpUrl.Builder urlBuilder =
+                HttpUrl.parse(requestUrl).newBuilder();
+        urlBuilder.addQueryParameter("apikey", "ea529b13f1004c559834d391160d17c4");
+        String url = urlBuilder.build().toString();
+
+        RequestBody formBody = new FormBody.Builder().add("project", "381388").add("spider","etti").build();
+
+        Request request = new Request.Builder()
+                .header("Accept", "application/json")
+                .header("PROJECT", "etti")
+                .header("SPIDER", "etti")
+                .post(formBody)
+                .url(url)
+                .build();
+
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                e.printStackTrace();
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                if (response.isSuccessful()) {
+                    System.out.println("refresh done");
+                }
+            }
+
+        });
+    }
+
+
+
 }
+
+
+
 
