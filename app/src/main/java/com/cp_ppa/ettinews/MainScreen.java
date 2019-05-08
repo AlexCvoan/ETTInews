@@ -1,10 +1,12 @@
 package com.cp_ppa.ettinews;
 
+import android.annotation.SuppressLint;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
@@ -31,11 +33,13 @@ public class MainScreen extends AppCompatActivity {
     private String mLastKey;
     private String mLastButOneKey;
     private String mTest;
+    private boolean isJobRunning;
     private News latestNews, previousNews;
 
 
 
 
+    @SuppressLint("StaticFieldLeak")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -43,18 +47,21 @@ public class MainScreen extends AppCompatActivity {
 
         mLastKey = super.getIntent().getExtras().getString("mLastKey");
         mLastButOneKey = super.getIntent().getExtras().getString("mLastButOneKey");
+        isJobRunning = super.getIntent().getExtras().getBoolean("isJobRunning");
         mTest = mLastKey;
         getNews(mLastKey);
         previousNews = latestNews;
-        new CheckForNews(){
-            @Override
-            public void onPostExecute(String result){
-                mLastButOneKey = result;
-                Toast toast = Toast.makeText(MainScreen.this ,"Paianjenul a terminat jobul", Toast.LENGTH_SHORT);
-                toast.show();
-            }
-        }.execute(mTest);
-
+        if(isJobRunning) {
+            new CheckForNews() {
+                @Override
+                public void onPostExecute(String result) {
+                    isJobRunning = false;
+                    mLastButOneKey = result;
+                    Toast toast = Toast.makeText(MainScreen.this, "Paianjenul a terminat jobul", Toast.LENGTH_SHORT);
+                    toast.show();
+                }
+            }.execute(mTest);
+        }
         final SwipeRefreshLayout mSwipeRefreshLayout = findViewById(R.id.swipeRefreshLayout);
 
         mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
@@ -62,8 +69,15 @@ public class MainScreen extends AppCompatActivity {
             public void onRefresh() {
 
                 if(!mTest.equals(mLastButOneKey)){
-                    Toast toast = Toast.makeText(MainScreen.this ,"Paianjenul nu a terminat jobul", Toast.LENGTH_SHORT);
-                    toast.show();
+                    if(isJobRunning){
+                        Toast toast = Toast.makeText(MainScreen.this ,"Paianjenul nu a terminat jobul", Toast.LENGTH_SHORT);
+                        toast.show();
+                    }
+                    else {
+                        Toast toast = Toast.makeText(MainScreen.this ,"Nu exista stiri noi", Toast.LENGTH_SHORT);
+                        toast.show();
+                    }
+
                 }
                 else{
 
@@ -129,7 +143,7 @@ public class MainScreen extends AppCompatActivity {
                         mUrlsFixed.add("http://www.electronica.pub.ro"+mUrls.get(i));
                     }
 
-                    System.out.println("it is working");
+                    Log.d("info", "GetNews done");
 
 
 

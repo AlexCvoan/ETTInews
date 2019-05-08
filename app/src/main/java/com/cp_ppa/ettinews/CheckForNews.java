@@ -60,7 +60,6 @@ public class CheckForNews extends AsyncTask<String, Void, String> {
             @Override
             public void onFailure(Call call, IOException e) {
                 e.printStackTrace();
-                System.out.println("fail");
             }
 
             @Override
@@ -70,8 +69,8 @@ public class CheckForNews extends AsyncTask<String, Void, String> {
 
                     int mLast = myResponse.indexOf("key") + 7;
                     int mLastButOne = myResponse.indexOf("key", myResponse.indexOf("key") + 1) + 7;
-                    mLastKey = myResponse.substring(mLast, mLast + 11);
-                    mLastButOneKey = myResponse.substring(mLastButOne, mLastButOne + 11);
+                    mLastKey = myResponse.substring(mLast, mLast + 12);
+                    mLastButOneKey = myResponse.substring(mLastButOne, mLastButOne + 12);
 
                 }
             }

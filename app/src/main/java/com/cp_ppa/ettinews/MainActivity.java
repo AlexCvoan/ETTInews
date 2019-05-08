@@ -7,6 +7,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -36,17 +37,18 @@ public class MainActivity extends AppCompatActivity{
 
     private String mLastKey;
     private String mLastButOneKey;
+    private boolean isJobRunning;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        final Button mStartButton = findViewById(R.id.startButton);
+        Button mStartButton, mRefreshButton;
+        isJobRunning = false;
+        mStartButton = findViewById(R.id.startButton);
+        mRefreshButton = findViewById(R.id.refreshButton);
 
-        refreshNews();
         getJobCount();
-
-
 
 
         mStartButton.setOnClickListener(new View.OnClickListener() {
@@ -57,13 +59,27 @@ public class MainActivity extends AppCompatActivity{
                 Bundle bundle = new Bundle();
                 bundle.putString("mLastKey", mLastKey);
                 bundle.putString("mLastButOneKey",mLastButOneKey);
+                bundle.putBoolean("isJobRunning",isJobRunning);
                 Intent intent = new Intent(MainActivity.this, MainScreen.class);
                 intent.putExtras(bundle);
                 MainActivity.this.startActivity(intent);
-            // getNews(mLastKey);
+            }
+        });
+
+        mRefreshButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                getJobCount();
+                refreshNews();
+                isJobRunning = true;
+                Toast toast = Toast.makeText(MainActivity.this ,"Paianjenul ruleaza. Procesul poate dura pana la 2 minute.", Toast.LENGTH_SHORT);
+                toast.show();
+
             }
         });
     }
+
+
 
 
     private void getJobCount(){
@@ -86,7 +102,6 @@ public class MainActivity extends AppCompatActivity{
             @Override
             public void onFailure(Call call, IOException e) {
                 e.printStackTrace();
-                System.out.println("fail");
             }
 
             @Override
@@ -96,8 +111,8 @@ public class MainActivity extends AppCompatActivity{
 
                     int mLast = myResponse.indexOf("key") + 7;
                     int mLastButOne = myResponse.indexOf("key", myResponse.indexOf("key") + 1) + 7;
-                    mLastKey = myResponse.substring(mLast, mLast + 11);
-                    mLastButOneKey = myResponse.substring(mLastButOne, mLastButOne + 11);
+                    mLastKey = myResponse.substring(mLast, mLast + 12);
+                    mLastButOneKey = myResponse.substring(mLastButOne, mLastButOne + 12);
 
                 }
             }
@@ -135,7 +150,7 @@ public class MainActivity extends AppCompatActivity{
             @Override
             public void onResponse(Call call, Response response) throws IOException {
                 if (response.isSuccessful()) {
-                    System.out.println("refresh done");
+                   Log.d("INFO", "Refresh Done");
                 }
             }
 
