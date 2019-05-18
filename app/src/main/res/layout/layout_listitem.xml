@@ -1,14 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:padding="15dp"
+    android:padding="8dp"
     android:id="@+id/parent_layout">
 
 
     <TextView
         android:id="@+id/news_title"
-        style="@android:style/Widget.DeviceDefault.Button"
+        style="@android:style/Widget.DeviceDefault.Button.Borderless"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="false"
@@ -16,14 +17,15 @@
         android:layout_marginEnd="10dp"
         android:clickable="false"
         android:focusable="auto"
+        android:gravity=""
         android:linksClickable="false"
         android:text="News"
+        android:textAlignment="gravity"
         android:textAllCaps="false"
         android:textAppearance="@style/TextAppearance.AppCompat.Body1"
         android:textIsSelectable="false"
         android:textSize="15sp"
-        android:textAlignment="gravity"
-        android:gravity=""/>
+        app:fontFamily="@font/alegreya_bold" />
 
 
 

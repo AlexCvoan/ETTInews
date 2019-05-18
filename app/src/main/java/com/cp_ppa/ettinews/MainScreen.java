@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -56,7 +57,7 @@ public class MainScreen extends AppCompatActivity {
                 @Override
                 public void onPostExecute(String result) {
                     isJobRunning = false;
-                    mLastButOneKey = result;
+                    mLastKey = result;
                     Toast toast = Toast.makeText(MainScreen.this, "Paianjenul a terminat jobul", Toast.LENGTH_SHORT);
                     toast.show();
                 }
@@ -158,6 +159,8 @@ public class MainScreen extends AppCompatActivity {
                             recyclerView.setLayoutManager(layoutManager);
                             mAdapter = new RecyclerViewAdapter(mTitlesFixed, mUrlsFixed);
                             recyclerView.setAdapter(mAdapter);
+                            DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(recyclerView.getContext(),DividerItemDecoration.VERTICAL);
+                            recyclerView.addItemDecoration(dividerItemDecoration);
                         }
                     });
                 }

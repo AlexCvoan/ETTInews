@@ -33,7 +33,7 @@ public class CheckForNews extends AsyncTask<String, Void, String> {
             }
             getJobCount();
             if(params[0].equals(mLastButOneKey))
-                return mLastButOneKey;
+                return mLastKey;
         }
         return "Fail.";
     }
