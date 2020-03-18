@@ -2,6 +2,5 @@ Basic news app for the website http://www.electronica.pub.ro, for Android, writt
 
 The backend is written in Python, using Scrapy and everything runs on scrapinghub.
 
-![Main Activity](/main.png)
-
-![List Activity](/list.png)
+![Main Activity](/main.png | width = 50)
+![List Activity](/list.png | width = 50)
